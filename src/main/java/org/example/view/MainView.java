@@ -65,34 +65,53 @@ public class MainView {
 
     private void addFormattingToolBar() {
         JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false); // Запрещает перемещение тулбара
+        toolBar.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // Добавляет границу для стиля
+        toolBar.setPreferredSize(new Dimension(frame.getWidth(), 50));
+        toolBar.addSeparator(new Dimension(10, 0));
 
         // Существующие элементы форматирования
         String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         fontComboBox = new JComboBox<>(fonts);
+        fontComboBox.setPreferredSize(new Dimension(150, 30));
+        fontComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
         toolBar.add(fontComboBox);
 
         Integer[] sizes = {8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36};
         sizeComboBox = new JComboBox<>(sizes);
+        sizeComboBox.setPreferredSize(new Dimension(80, 30));
+        sizeComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
         toolBar.add(sizeComboBox);
 
         boldButton = new JToggleButton("B");
-        boldButton.setFont(boldButton.getFont().deriveFont(Font.BOLD));
+        boldButton.setFont(new Font("Arial", Font.BOLD, 14));
+        boldButton.setPreferredSize(new Dimension(50, 30));
         toolBar.add(boldButton);
 
         italicButton = new JToggleButton("I");
-        italicButton.setFont(italicButton.getFont().deriveFont(Font.ITALIC));
+        italicButton.setFont(new Font("Arial", Font.ITALIC, 14));
+        italicButton.setPreferredSize(new Dimension(50, 30));
         toolBar.add(italicButton);
 
         colorButton = new JButton("Color");
+        colorButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        colorButton.setPreferredSize(new Dimension(80, 30));
         toolBar.add(colorButton);
 
         // Новые кнопки для выравнивания
         alignLeftButton = new JButton("L");
-        alignCenterButton = new JButton("C");
-        alignRightButton = new JButton("R");
-
+        alignLeftButton.setPreferredSize(new Dimension(50, 30));
+        alignLeftButton.setFont(new Font("Arial", Font.PLAIN, 14));
         toolBar.add(alignLeftButton);
+
+        alignCenterButton = new JButton("C");
+        alignCenterButton.setPreferredSize(new Dimension(50, 30));
+        alignCenterButton.setFont(new Font("Arial", Font.PLAIN, 14));
         toolBar.add(alignCenterButton);
+
+        alignRightButton = new JButton("R");
+        alignRightButton.setPreferredSize(new Dimension(50, 30));
+        alignRightButton.setFont(new Font("Arial", Font.PLAIN, 14));
         toolBar.add(alignRightButton);
 
         frame.add(toolBar, BorderLayout.NORTH);
@@ -103,10 +122,15 @@ public class MainView {
         controller.addActionListener(removeSpacesButton, "removeSpaces");
         replaceTextButton.addActionListener(e -> handleReplaceText());
         clearFormattingButton.addActionListener(e -> controller.clearFormattingAction());
+
+        fontComboBox.addActionListener(e -> setFontFamily((String) fontComboBox.getSelectedItem()));
+        sizeComboBox.addActionListener(e -> setFontSize((Integer) sizeComboBox.getSelectedItem()));
+        boldButton.addActionListener(e -> new StyledEditorKit.BoldAction().actionPerformed(e));
+        italicButton.addActionListener(e -> new StyledEditorKit.ItalicAction().actionPerformed(e));
+        colorButton.addActionListener(e -> chooseTextColor());
         alignLeftButton.addActionListener(e -> controller.applyTextAlignment(StyleConstants.ALIGN_LEFT));
         alignCenterButton.addActionListener(e -> controller.applyTextAlignment(StyleConstants.ALIGN_CENTER));
         alignRightButton.addActionListener(e -> controller.applyTextAlignment(StyleConstants.ALIGN_RIGHT));
-
     }
 
     private void setFontFamily(String fontName) {
