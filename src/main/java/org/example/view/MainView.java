@@ -3,16 +3,24 @@ package org.example.view;
 import org.example.controller.TextEditorController;
 
 import javax.swing.*;
+import javax.swing.text.*;
 import java.awt.*;
 
 public class MainView {
     private JFrame frame;
     private JTextPane textPane;
+
     private JButton countWordsButton;
     private JButton removeSpacesButton;
     private JButton replaceTextButton;
-    private JButton formatTextButton;
     private JButton clearFormattingButton;
+
+    private JComboBox<String> fontComboBox;
+    private JComboBox<Integer> sizeComboBox;
+    private JToggleButton boldButton;
+    private JToggleButton italicButton;
+    private JButton colorButton;
+
     private TextEditorController controller;
 
     public MainView() {
@@ -21,13 +29,10 @@ public class MainView {
         registerActions();
     }
 
-    /**
-     * Инициализация графического интерфейса.
-     */
     private void initializeUI() {
         frame = new JFrame("Text Editor Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(800, 500);
         frame.setLayout(new BorderLayout());
 
         // Текстовая область
@@ -36,39 +41,83 @@ public class MainView {
         frame.add(scrollPane, BorderLayout.CENTER);
 
         // Панель кнопок
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());
+        JPanel buttonPanel = new JPanel(new FlowLayout());
 
         countWordsButton = new JButton("Count Words");
         removeSpacesButton = new JButton("Remove Extra Spaces");
         replaceTextButton = new JButton("Replace Text");
-        formatTextButton = new JButton("Format Text");
         clearFormattingButton = new JButton("Clear Formatting");
 
         buttonPanel.add(countWordsButton);
         buttonPanel.add(removeSpacesButton);
         buttonPanel.add(replaceTextButton);
-        buttonPanel.add(formatTextButton);
         buttonPanel.add(clearFormattingButton);
-
         frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Добавление тулбара
+        addFormattingToolBar();
+
         frame.setVisible(true);
     }
 
-    /**
-     * Регистрация действий для кнопок с помощью контроллера.
-     */
+    private void addFormattingToolBar() {
+        JToolBar toolBar = new JToolBar();
+
+        // Шрифты
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        fontComboBox = new JComboBox<>(fonts);
+        fontComboBox.addActionListener(e -> setFontFamily((String) fontComboBox.getSelectedItem()));
+        toolBar.add(fontComboBox);
+
+        // Размер шрифта
+        Integer[] sizes = {8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36};
+        sizeComboBox = new JComboBox<>(sizes);
+        sizeComboBox.setSelectedItem(12);
+        sizeComboBox.addActionListener(e -> setFontSize((Integer) sizeComboBox.getSelectedItem()));
+        toolBar.add(sizeComboBox);
+
+        // Жирный
+        boldButton = new JToggleButton("B");
+        boldButton.setFont(boldButton.getFont().deriveFont(Font.BOLD));
+        boldButton.addActionListener(e -> new StyledEditorKit.BoldAction().actionPerformed(e));
+        toolBar.add(boldButton);
+
+        // Курсив
+        italicButton = new JToggleButton("I");
+        italicButton.setFont(italicButton.getFont().deriveFont(Font.ITALIC));
+        italicButton.addActionListener(e -> new StyledEditorKit.ItalicAction().actionPerformed(e));
+        toolBar.add(italicButton);
+
+        // Цвет текста
+        colorButton = new JButton("Color");
+        colorButton.addActionListener(e -> chooseTextColor());
+        toolBar.add(colorButton);
+
+        frame.add(toolBar, BorderLayout.NORTH);
+    }
+
     private void registerActions() {
         controller.addActionListener(countWordsButton, "countWords");
         controller.addActionListener(removeSpacesButton, "removeSpaces");
         replaceTextButton.addActionListener(e -> handleReplaceText());
-        formatTextButton.addActionListener(e -> handleTextFormatting());
         clearFormattingButton.addActionListener(e -> controller.clearFormattingAction());
     }
 
-    /**
-     * Обработчик замены текста (с диалогом ввода).
-     */
+    private void setFontFamily(String fontName) {
+        new StyledEditorKit.FontFamilyAction("font-family", fontName).actionPerformed(null);
+    }
+
+    private void setFontSize(int size) {
+        new StyledEditorKit.FontSizeAction("font-size", size).actionPerformed(null);
+    }
+
+    private void chooseTextColor() {
+        Color color = JColorChooser.showDialog(frame, "Choose Text Color", Color.BLACK);
+        if (color != null) {
+            new StyledEditorKit.ForegroundAction("text-color", color).actionPerformed(null);
+        }
+    }
+
     private void handleReplaceText() {
         String target = JOptionPane.showInputDialog(frame, "Text to replace:", "Replace Text", JOptionPane.QUESTION_MESSAGE);
         if (target == null || target.isEmpty()) return;
@@ -78,24 +127,4 @@ public class MainView {
 
         controller.replaceTextAction(target, replacement);
     }
-
-    /**
-     * Обработчик форматирования текста (с диалогом ввода параметров).
-     */
-    private void handleTextFormatting() {
-        String fontName = JOptionPane.showInputDialog(frame, "Enter font name:", "Arial");
-        int fontSize = Integer.parseInt(JOptionPane.showInputDialog(frame, "Enter font size:", "12"));
-        boolean isBold = JOptionPane.showConfirmDialog(frame, "Bold?", "Font Style", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
-        boolean isItalic = JOptionPane.showConfirmDialog(frame, "Italic?", "Font Style", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
-        Color color = JColorChooser.showDialog(frame, "Choose Text Color", Color.BLACK);
-
-        if (fontName != null && color != null) {
-            controller.applyTextFormatting(fontName, fontSize, isBold, isItalic, color);
-        }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(MainView::new);
-    }
 }
-
