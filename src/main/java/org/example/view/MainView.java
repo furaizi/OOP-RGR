@@ -77,10 +77,11 @@ public class MainView {
         fontComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
         toolBar.add(fontComboBox);
 
-        Integer[] sizes = {8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36};
+        Integer[] sizes = {8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 56, 64, 72, 80, 96};
         sizeComboBox = new JComboBox<>(sizes);
         sizeComboBox.setPreferredSize(new Dimension(80, 30));
         sizeComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        sizeComboBox.setSelectedItem(24); // Устанавливаем 24 как размер по умолчанию
         toolBar.add(sizeComboBox);
 
         boldButton = new JToggleButton("B");
@@ -99,19 +100,19 @@ public class MainView {
         toolBar.add(colorButton);
 
         // Новые кнопки для выравнивания
-        alignLeftButton = new JButton("L");
-        alignLeftButton.setPreferredSize(new Dimension(50, 30));
-        alignLeftButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        alignLeftButton = new JButton(new ImageIcon(getClass().getResource("/icons/align_left.png")));
+        alignLeftButton.setToolTipText("Align Left");
+        alignLeftButton.setPreferredSize(new Dimension(40, 40));
         toolBar.add(alignLeftButton);
 
-        alignCenterButton = new JButton("C");
-        alignCenterButton.setPreferredSize(new Dimension(50, 30));
-        alignCenterButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        alignCenterButton = new JButton(new ImageIcon(getClass().getResource("/icons/align_center.png")));
+        alignCenterButton.setToolTipText("Align Center");
+        alignCenterButton.setPreferredSize(new Dimension(40, 40));
         toolBar.add(alignCenterButton);
 
-        alignRightButton = new JButton("R");
-        alignRightButton.setPreferredSize(new Dimension(50, 30));
-        alignRightButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        alignRightButton = new JButton(new ImageIcon(getClass().getResource("/icons/align_right.png")));
+        alignRightButton.setToolTipText("Align Right");
+        alignRightButton.setPreferredSize(new Dimension(40, 40));
         toolBar.add(alignRightButton);
 
         frame.add(toolBar, BorderLayout.NORTH);
