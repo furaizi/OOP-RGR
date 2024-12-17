@@ -4,6 +4,7 @@ import org.example.model.TextProcessor;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 public class TextEditorController {
@@ -52,6 +53,22 @@ public class TextEditorController {
     public void clearFormattingAction() {
         textPane.setCharacterAttributes(new SimpleAttributeSet(), true);
     }
+
+    public void applyTextAlignment(int alignment) {
+        int start = textPane.getSelectionStart();
+        int end = textPane.getSelectionEnd();
+
+        if (start == end) {
+            JOptionPane.showMessageDialog(null, "No text selected for alignment.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        SimpleAttributeSet alignmentAttribute = new SimpleAttributeSet();
+        StyleConstants.setAlignment(alignmentAttribute, alignment);
+
+        document.setParagraphAttributes(start, end - start, alignmentAttribute, false);
+    }
+
 
     public void addActionListener(JButton button, String actionType) {
         button.addActionListener(e -> {

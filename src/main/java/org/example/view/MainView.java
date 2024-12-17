@@ -20,6 +20,9 @@ public class MainView {
     private JToggleButton boldButton;
     private JToggleButton italicButton;
     private JButton colorButton;
+    private JButton alignLeftButton;
+    private JButton alignCenterButton;
+    private JButton alignRightButton;
 
     private TextEditorController controller;
 
@@ -63,35 +66,34 @@ public class MainView {
     private void addFormattingToolBar() {
         JToolBar toolBar = new JToolBar();
 
-        // Шрифты
+        // Существующие элементы форматирования
         String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         fontComboBox = new JComboBox<>(fonts);
-        fontComboBox.addActionListener(e -> setFontFamily((String) fontComboBox.getSelectedItem()));
         toolBar.add(fontComboBox);
 
-        // Размер шрифта
         Integer[] sizes = {8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36};
         sizeComboBox = new JComboBox<>(sizes);
-        sizeComboBox.setSelectedItem(12);
-        sizeComboBox.addActionListener(e -> setFontSize((Integer) sizeComboBox.getSelectedItem()));
         toolBar.add(sizeComboBox);
 
-        // Жирный
         boldButton = new JToggleButton("B");
         boldButton.setFont(boldButton.getFont().deriveFont(Font.BOLD));
-        boldButton.addActionListener(e -> new StyledEditorKit.BoldAction().actionPerformed(e));
         toolBar.add(boldButton);
 
-        // Курсив
         italicButton = new JToggleButton("I");
         italicButton.setFont(italicButton.getFont().deriveFont(Font.ITALIC));
-        italicButton.addActionListener(e -> new StyledEditorKit.ItalicAction().actionPerformed(e));
         toolBar.add(italicButton);
 
-        // Цвет текста
         colorButton = new JButton("Color");
-        colorButton.addActionListener(e -> chooseTextColor());
         toolBar.add(colorButton);
+
+        // Новые кнопки для выравнивания
+        alignLeftButton = new JButton("L");
+        alignCenterButton = new JButton("C");
+        alignRightButton = new JButton("R");
+
+        toolBar.add(alignLeftButton);
+        toolBar.add(alignCenterButton);
+        toolBar.add(alignRightButton);
 
         frame.add(toolBar, BorderLayout.NORTH);
     }
@@ -101,6 +103,10 @@ public class MainView {
         controller.addActionListener(removeSpacesButton, "removeSpaces");
         replaceTextButton.addActionListener(e -> handleReplaceText());
         clearFormattingButton.addActionListener(e -> controller.clearFormattingAction());
+        alignLeftButton.addActionListener(e -> controller.applyTextAlignment(StyleConstants.ALIGN_LEFT));
+        alignCenterButton.addActionListener(e -> controller.applyTextAlignment(StyleConstants.ALIGN_CENTER));
+        alignRightButton.addActionListener(e -> controller.applyTextAlignment(StyleConstants.ALIGN_RIGHT));
+
     }
 
     private void setFontFamily(String fontName) {
