@@ -11,8 +11,8 @@ public class ReplaceTextCommand extends TextCommand {
 
     @Override
     public void execute() {
-        String target = JOptionPane.showInputDialog("Enter text to replace:");
-        String replacement = JOptionPane.showInputDialog("Enter replacement text:");
+        var target = JOptionPane.showInputDialog("Enter text to replace:");
+        var replacement = JOptionPane.showInputDialog("Enter replacement text:");
         if (target != null && replacement != null) {
             updateTextProcessor();
             textProcessor.replaceText(target, replacement);

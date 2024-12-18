@@ -26,7 +26,7 @@ public class MainView {
     }
 
     private JFrame initializeFrame() {
-        JFrame frame = new JFrame("Text Editor Application");
+        var frame = new JFrame("Text Editor Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 500);
         frame.setLayout(new BorderLayout());

@@ -65,7 +65,7 @@ public class TextEditorController {
     }
 
     public void chooseTextColor() {
-        Color color = JColorChooser.showDialog(null, "Choose Text Color", Color.BLACK);
+        var color = JColorChooser.showDialog(null, "Choose Text Color", Color.BLACK);
         if (color != null) {
             new StyledEditorKit.ForegroundAction("text-color", color).actionPerformed(null);
         }

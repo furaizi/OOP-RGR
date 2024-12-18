@@ -11,7 +11,7 @@ public class LoadTextCommand extends TextCommand {
 
     @Override
     public void execute() {
-        String text = JOptionPane.showInputDialog(null, "Enter text to load:");
+        var text = JOptionPane.showInputDialog(null, "Enter text to load:");
         if (text != null) {
             textProcessor.setContent(text);
             updateTextPane();

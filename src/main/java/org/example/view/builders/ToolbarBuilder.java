@@ -11,7 +11,7 @@ import java.awt.*;
 public class ToolbarBuilder {
 
     public static JToolBar build(TextEditorController controller, JFrame frame) {
-        JToolBar toolBar = new JToolBar();
+        var toolBar = new JToolBar();
         toolBar.setFloatable(false);
         toolBar.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         toolBar.setPreferredSize(new Dimension(frame.getWidth(), 50));
@@ -33,12 +33,12 @@ public class ToolbarBuilder {
     }
 
     private static JComboBox<String> createFontComboBox(TextEditorController controller) {
-        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        var fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         return UIComponentFactory.createComboBox(fonts, e -> controller.setFontFamily((String) ((JComboBox<?>) e.getSource()).getSelectedItem()));
     }
 
     private static JComboBox<Integer> createSizeComboBox(TextEditorController controller) {
-        Integer[] sizes = {8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 56, 64, 72};
+        var sizes = new Integer[]{8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 56, 64, 72};
         return UIComponentFactory.createComboBox(sizes, e -> controller.setFontSize((Integer) ((JComboBox<?>) e.getSource()).getSelectedItem()));
     }
 }

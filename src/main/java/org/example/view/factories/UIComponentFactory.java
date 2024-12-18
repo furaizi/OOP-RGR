@@ -9,7 +9,7 @@ public class UIComponentFactory {
     private static final Font DEFAULT_FONT = new Font("Arial", Font.PLAIN, 14);
 
     public static JMenuItem createMenuItem(String text, Runnable action) {
-        JMenuItem menuItem = new JMenuItem(text);
+        var menuItem = new JMenuItem(text);
         menuItem.setFont(DEFAULT_FONT);
         menuItem.setPreferredSize(new Dimension(200, 30));
         menuItem.addActionListener(e -> action.run());
@@ -17,7 +17,7 @@ public class UIComponentFactory {
     }
 
     public static JToggleButton createToggleButton(String text, Runnable action) {
-        JToggleButton button = new JToggleButton(text);
+        var button = new JToggleButton(text);
         var style = switch (text) {
             case "B" -> Font.BOLD;
             case "I" -> Font.ITALIC;
@@ -30,7 +30,7 @@ public class UIComponentFactory {
     }
 
     public static JButton createButton(String text, Runnable action) {
-        JButton button = new JButton(text);
+        var button = new JButton(text);
         button.setFont(DEFAULT_FONT);
         button.setPreferredSize(new Dimension(80, 30));
         button.addActionListener(e -> action.run());
@@ -38,7 +38,7 @@ public class UIComponentFactory {
     }
 
     public static JButton createImageButton(String iconPath, String tooltip, Runnable action) {
-        JButton button = new JButton(new ImageIcon(UIComponentFactory.class.getResource(iconPath)));
+        var button = new JButton(new ImageIcon(UIComponentFactory.class.getResource(iconPath)));
         button.setPreferredSize(new Dimension(40, 40));
         button.setToolTipText(tooltip);
         button.addActionListener(e -> action.run());
@@ -46,7 +46,7 @@ public class UIComponentFactory {
     }
 
     public static <T> JComboBox<T> createComboBox(T[] items, ActionListener listener) {
-        JComboBox<T> comboBox = new JComboBox<>(items);
+        var comboBox = new JComboBox<>(items);
         comboBox.setFont(DEFAULT_FONT);
         comboBox.addActionListener(listener);
         return comboBox;

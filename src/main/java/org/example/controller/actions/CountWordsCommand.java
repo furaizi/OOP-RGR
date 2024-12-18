@@ -12,7 +12,7 @@ public class CountWordsCommand extends TextCommand {
     @Override
     public void execute() {
         updateTextProcessor();
-        int wordCount = textProcessor.countWords();
+        var wordCount = textProcessor.countWords();
         JOptionPane.showMessageDialog(null, "Word count: " + wordCount);
     }
 }
