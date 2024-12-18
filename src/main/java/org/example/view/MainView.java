@@ -46,6 +46,8 @@ public class MainView {
         addFormattingToolBar();
 
         frame.setVisible(true);
+
+        SwingUtilities.invokeLater(() -> setDefaultFontStyle(textPane));
     }
 
     private void createMenuBar() {
@@ -90,7 +92,7 @@ public class MainView {
         countWordsItem.addActionListener(e -> controller.countWordsAction());
         removeSpacesItem.addActionListener(e -> controller.removeExtraSpacesAction());
         replaceTextItem.addActionListener(e -> handleReplaceText());
-        clearFormattingItem.addActionListener(e -> controller.clearFormattingAction());
+        clearFormattingItem.addActionListener(e -> clearFormatting());
 
         menuBar.add(editMenu);
 
@@ -127,7 +129,9 @@ public class MainView {
         fontComboBox = new JComboBox<>(fonts);
         fontComboBox.setPreferredSize(new Dimension(150, 30));
         fontComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        fontComboBox.setSelectedItem("Arial"); // Устанавливаем Arial как выбранный шрифт
         toolBar.add(fontComboBox);
+
 
         Integer[] sizes = {8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 56, 64, 72, 80, 96};
         sizeComboBox = new JComboBox<>(sizes);
@@ -171,7 +175,13 @@ public class MainView {
     }
 
     private void registerActions() {
-        fontComboBox.addActionListener(e -> setFontFamily((String) fontComboBox.getSelectedItem()));
+        fontComboBox.addActionListener(e -> {
+            String selectedFont = (String) fontComboBox.getSelectedItem();
+            if (selectedFont != null) {
+                new StyledEditorKit.FontFamilyAction("font-family", selectedFont).actionPerformed(null);
+            }
+        });
+
         sizeComboBox.addActionListener(e -> setFontSize());
         boldButton.addActionListener(e -> new StyledEditorKit.BoldAction().actionPerformed(e));
         italicButton.addActionListener(e -> new StyledEditorKit.ItalicAction().actionPerformed(e));
@@ -215,6 +225,32 @@ public class MainView {
         StyleConstants.setFontSize(attrs, fontSize);
         doc.setParagraphAttributes(0, doc.getLength(), attrs, false);
     }
+
+    private void setDefaultFontStyle(JTextPane textPane) {
+        // Устанавливаем Arial как шрифт через StyledEditorKit
+        new StyledEditorKit.FontFamilyAction("font-family", "Arial").actionPerformed(null);
+        // Устанавливаем размер шрифта через StyledEditorKit
+        new StyledEditorKit.FontSizeAction("font-size", 24).actionPerformed(null);
+
+        // Обновляем fontComboBox, чтобы показывать Arial
+        if (fontComboBox != null) {
+            fontComboBox.setSelectedItem("Arial");
+        }
+        if (sizeComboBox != null) {
+            sizeComboBox.setSelectedItem(24);
+        }
+    }
+
+    private void clearFormatting() {
+        // Сбрасываем все стили текста
+        textPane.setCharacterAttributes(new SimpleAttributeSet(), true);
+
+        // Устанавливаем Arial и размер 24 через StyledEditorKit
+        setDefaultFontStyle(textPane);
+    }
+
+
+
 
     private void handleLoadText() {
         String text = JOptionPane.showInputDialog(frame, "Enter text to load:", "Load Text", JOptionPane.PLAIN_MESSAGE);
