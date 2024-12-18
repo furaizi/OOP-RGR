@@ -10,11 +10,6 @@ public class MainView {
     private JFrame frame;
     private JTextPane textPane;
 
-    private JButton countWordsButton;
-    private JButton removeSpacesButton;
-    private JButton replaceTextButton;
-    private JButton clearFormattingButton;
-
     private JComboBox<String> fontComboBox;
     private JComboBox<Integer> sizeComboBox;
     private JToggleButton boldButton;
@@ -40,28 +35,85 @@ public class MainView {
 
         // Текстовая область
         textPane = new JTextPane();
+        setDefaultFontSize(textPane, 24); // Устанавливаем размер шрифта по умолчанию
         JScrollPane scrollPane = new JScrollPane(textPane);
         frame.add(scrollPane, BorderLayout.CENTER);
 
-        // Панель кнопок
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-
-        countWordsButton = new JButton("Count Words");
-        removeSpacesButton = new JButton("Remove Extra Spaces");
-        replaceTextButton = new JButton("Replace Text");
-        clearFormattingButton = new JButton("Clear Formatting");
-
-        buttonPanel.add(countWordsButton);
-        buttonPanel.add(removeSpacesButton);
-        buttonPanel.add(replaceTextButton);
-        buttonPanel.add(clearFormattingButton);
-        frame.add(buttonPanel, BorderLayout.SOUTH);
+        // Добавляем меню-бар
+        createMenuBar();
 
         // Добавление тулбара
         addFormattingToolBar();
 
         frame.setVisible(true);
     }
+
+    private void createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        // Настройка размера и стиля меню-бара
+        menuBar.setPreferredSize(new Dimension(frame.getWidth(), 50));
+        menuBar.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // Граница для стиля
+        menuBar.setBackground(new Color(240, 240, 240)); // Светло-серый фон
+        menuBar.setOpaque(true);
+
+        // Меню "File"
+        JMenu fileMenu = createStyledMenu("File");
+        JMenuItem saveItem = createStyledMenuItem("Save");
+        JMenuItem loadItem = createStyledMenuItem("Load");
+        JMenuItem exitItem = createStyledMenuItem("Exit");
+        fileMenu.add(saveItem);
+        fileMenu.add(loadItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+
+        // Обработчики для пунктов "File"
+        saveItem.addActionListener(e -> controller.saveText());
+        loadItem.addActionListener(e -> handleLoadText());
+        exitItem.addActionListener(e -> System.exit(0));
+
+        menuBar.add(fileMenu);
+
+        // Меню "Edit"
+        JMenu editMenu = createStyledMenu("Edit");
+        JMenuItem countWordsItem = createStyledMenuItem("Count Words");
+        JMenuItem removeSpacesItem = createStyledMenuItem("Remove Extra Spaces");
+        JMenuItem replaceTextItem = createStyledMenuItem("Replace Text");
+        JMenuItem clearFormattingItem = createStyledMenuItem("Clear Formatting");
+        editMenu.add(countWordsItem);
+        editMenu.add(removeSpacesItem);
+        editMenu.add(replaceTextItem);
+        editMenu.addSeparator();
+        editMenu.add(clearFormattingItem);
+
+        // Обработчики для пунктов "Edit"
+        countWordsItem.addActionListener(e -> controller.countWordsAction());
+        removeSpacesItem.addActionListener(e -> controller.removeExtraSpacesAction());
+        replaceTextItem.addActionListener(e -> handleReplaceText());
+        clearFormattingItem.addActionListener(e -> controller.clearFormattingAction());
+
+        menuBar.add(editMenu);
+
+        // Устанавливаем меню-бар в окно
+        frame.setJMenuBar(menuBar);
+    }
+
+    // Метод для создания стилизованного меню
+    private JMenu createStyledMenu(String text) {
+        JMenu menu = new JMenu(text);
+        menu.setFont(new Font("Arial", Font.PLAIN, 16)); // Увеличиваем шрифт
+        menu.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Добавляем отступы
+        return menu;
+    }
+
+    // Метод для создания стилизованных пунктов меню
+    private JMenuItem createStyledMenuItem(String text) {
+        JMenuItem menuItem = new JMenuItem(text);
+        menuItem.setFont(new Font("Arial", Font.PLAIN, 14)); // Шрифт пунктов меню
+        menuItem.setPreferredSize(new Dimension(200, 30)); // Увеличиваем размер пунктов меню
+        return menuItem;
+    }
+
 
     private void addFormattingToolBar() {
         JToolBar toolBar = new JToolBar();
@@ -119,13 +171,8 @@ public class MainView {
     }
 
     private void registerActions() {
-        controller.addActionListener(countWordsButton, "countWords");
-        controller.addActionListener(removeSpacesButton, "removeSpaces");
-        replaceTextButton.addActionListener(e -> handleReplaceText());
-        clearFormattingButton.addActionListener(e -> controller.clearFormattingAction());
-
         fontComboBox.addActionListener(e -> setFontFamily((String) fontComboBox.getSelectedItem()));
-        sizeComboBox.addActionListener(e -> setFontSize((Integer) sizeComboBox.getSelectedItem()));
+        sizeComboBox.addActionListener(e -> setFontSize());
         boldButton.addActionListener(e -> new StyledEditorKit.BoldAction().actionPerformed(e));
         italicButton.addActionListener(e -> new StyledEditorKit.ItalicAction().actionPerformed(e));
         colorButton.addActionListener(e -> chooseTextColor());
@@ -138,8 +185,11 @@ public class MainView {
         new StyledEditorKit.FontFamilyAction("font-family", fontName).actionPerformed(null);
     }
 
-    private void setFontSize(int size) {
-        new StyledEditorKit.FontSizeAction("font-size", size).actionPerformed(null);
+    private void setFontSize() {
+        Integer selectedSize = (Integer) sizeComboBox.getSelectedItem();
+        if (selectedSize != null) {
+            new StyledEditorKit.FontSizeAction("font-size", selectedSize).actionPerformed(null);
+        }
     }
 
     private void chooseTextColor() {
@@ -157,5 +207,19 @@ public class MainView {
         if (replacement == null) return;
 
         controller.replaceTextAction(target, replacement);
+    }
+
+    private void setDefaultFontSize(JTextPane textPane, int fontSize) {
+        StyledDocument doc = textPane.getStyledDocument();
+        SimpleAttributeSet attrs = new SimpleAttributeSet();
+        StyleConstants.setFontSize(attrs, fontSize);
+        doc.setParagraphAttributes(0, doc.getLength(), attrs, false);
+    }
+
+    private void handleLoadText() {
+        String text = JOptionPane.showInputDialog(frame, "Enter text to load:", "Load Text", JOptionPane.PLAIN_MESSAGE);
+        if (text != null) {
+            controller.loadText(text);
+        }
     }
 }
