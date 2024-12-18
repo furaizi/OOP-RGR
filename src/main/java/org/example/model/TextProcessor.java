@@ -49,7 +49,7 @@ public class TextProcessor {
      * @return количество слов
      */
     public int countWords() {
-        String text = documentContent.toString().trim();
+        var text = documentContent.toString().trim();
         return text.isEmpty() ? 0 : text.split("\\s+").length;
     }
 
@@ -66,7 +66,9 @@ public class TextProcessor {
      * Удаляет лишние пробелы из содержимого документа (двойные пробелы и пробелы в начале/конце).
      */
     public void removeExtraSpaces() {
-        String cleanedText = documentContent.toString().trim().replaceAll("\\s+", " ");
+        var cleanedText = documentContent.toString()
+                                         .trim()
+                                         .replaceAll("\\s+", " ");
         documentContent.setLength(0);
         documentContent.append(cleanedText);
     }
@@ -80,7 +82,8 @@ public class TextProcessor {
     public void replaceText(String target, String replacement) {
         Objects.requireNonNull(target, "Target text cannot be null");
         Objects.requireNonNull(replacement, "Replacement text cannot be null");
-        String updatedText = documentContent.toString().replace(target, replacement);
+        var updatedText = documentContent.toString()
+                                         .replace(target, replacement);
         documentContent.setLength(0);
         documentContent.append(updatedText);
     }
@@ -91,12 +94,12 @@ public class TextProcessor {
      * @param byLength если true, сортирует по длине строки, иначе по алфавиту
      */
     public void sortLines(boolean byLength) {
-        List<String> lineList = Arrays.stream(documentContent.toString().split("\\n"))
-                .sorted(byLength ? Comparator.comparingInt(String::length) : String::compareTo)
-                .collect(Collectors.toList());
+        var sortedLines = Arrays.stream(documentContent.toString().split("\\n"))
+                                      .sorted(byLength ? Comparator.comparingInt(String::length) : String::compareTo)
+                                      .collect(Collectors.joining("\n"));
 
         documentContent.setLength(0);
-        documentContent.append(String.join("\n", lineList));
+        documentContent.append(sortedLines);
     }
 
     /**
