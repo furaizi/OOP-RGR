@@ -14,8 +14,8 @@ public class MenuBarBuilder {
     public static JMenuBar build(TextEditorController controller, JFrame frame) {
         var menuBar = createMenuBar(frame);
         menuBar.add(buildMenu("File", List.of(
-                new MenuItemConfig("Save", controller::saveText),
-                new MenuItemConfig("Load", controller::loadText),
+                new MenuItemConfig("Save", controller::saveFormattedText),
+                new MenuItemConfig("Load", controller::loadFormattedText),
                 new MenuItemConfig("Exit", () -> System.exit(0))
         )));
         menuBar.add(buildMenu("Edit", List.of(

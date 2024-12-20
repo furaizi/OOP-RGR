@@ -5,7 +5,11 @@ import org.example.model.TextProcessor;
 
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,34 +27,69 @@ public class TextEditorController {
         this.alignmentHandler = new TextAlignmentHandler(textPane);
     }
 
+    public void saveFormattedText() {
+        var fileChooser = new JFileChooser();
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            var file = fileChooser.getSelectedFile();
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                var doc = textPane.getStyledDocument();
+                new RTFEditorKit().write(fos, doc, 0, doc.getLength());
+                JOptionPane.showMessageDialog(null, "Text saved successfully with formatting.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Failed to save file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void loadFormattedText() {
+        var fileChooser = new JFileChooser();
+        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (FileInputStream fis = new FileInputStream(file)) {
+                RTFEditorKit rtfEditorKit = new RTFEditorKit();
+                StyledDocument doc = (StyledDocument) rtfEditorKit.createDefaultDocument();
+                rtfEditorKit.read(fis, doc, 0);
+                textPane.setDocument(doc); // Устанавливаем документ в textPane
+                JOptionPane.showMessageDialog(null, "Text loaded successfully with formatting.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Failed to load file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     // Команды
     public void saveText() {
-        executeCommand(() -> JOptionPane.showMessageDialog(null, "Text saved successfully."),
-                       () -> textProcessor.setContent(textPane.getText()));
+        textProcessor.setContent(textPane.getText());
+        JOptionPane.showMessageDialog(null, "Text saved successfully.");
     }
 
     public void loadText() {
         var text = Optional.ofNullable(JOptionPane.showInputDialog("Enter text to load:"));
-        text.ifPresent(content -> executeCommand(
-                () -> textPane.setText(content),
-                () -> textProcessor.setContent(content)
-        ));
+        text.ifPresent(content -> {
+            textPane.setText(content);
+            textProcessor.setContent(content);
+        });
     }
 
     public void countWords() {
-        executeCommand(() -> JOptionPane.showMessageDialog(null, "Word count: " + textProcessor.countWords()),
-                       () -> textProcessor.setContent(textPane.getText()));
+        textProcessor.setContent(textPane.getText());
+        JOptionPane.showMessageDialog(null, "Word count: " + textProcessor.countWords());
     }
 
     public void removeExtraSpaces() {
-        executeCommand(() -> JOptionPane.showMessageDialog(null, "Extra spaces removed."),
-                       textProcessor::removeExtraSpaces);
+        textProcessor.setContent(textPane.getText());
+        textProcessor.removeExtraSpaces();
+        textPane.setText(textProcessor.getContent());
+        JOptionPane.showMessageDialog(null, "Extra spaces removed.");
     }
 
     public void replaceText() {
-        var target = Objects.requireNonNull(JOptionPane.showInputDialog("Enter text to replace:"));
-        var replacement = Objects.requireNonNull(JOptionPane.showInputDialog("Enter replacement text:"));
-        executeCommand(() -> textProcessor.replaceText(target, replacement));
+        var target = JOptionPane.showInputDialog("Enter text to replace:");
+        var replacement = JOptionPane.showInputDialog("Enter replacement text:");
+        if (target != null && replacement != null) {
+            textProcessor.replaceText(target, replacement);
+            textPane.setText(textProcessor.getContent());
+        }
     }
 
     // Выравнивание
@@ -82,7 +121,7 @@ public class TextEditorController {
     }
 
     public void clearFormatting() {
-        executeCommand(this::resetTextPaneFormatting);
+        resetTextPaneFormatting();
     }
 
     // Вспомогательные методы
@@ -90,15 +129,5 @@ public class TextEditorController {
         textPane.setCharacterAttributes(new SimpleAttributeSet(), true);
         setFontFamily(DEFAULT_FONT);
         setFontSize(DEFAULT_FONT_SIZE);
-    }
-
-    private void executeCommand(Runnable uiUpdate) {
-        executeCommand(uiUpdate, null);
-    }
-
-    private void executeCommand(Runnable uiUpdate, Runnable processorUpdate) {
-        if (processorUpdate != null) processorUpdate.run();
-        uiUpdate.run();
-        textPane.setText(textProcessor.getContent());
     }
 }
