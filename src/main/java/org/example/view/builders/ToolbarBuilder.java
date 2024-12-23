@@ -1,6 +1,7 @@
 package org.example.view.builders;
 
 import org.example.controller.TextEditorController;
+import org.example.view.Fonts;
 import org.example.view.factories.UIComponentFactory;
 
 import javax.swing.*;
@@ -31,11 +32,15 @@ public class ToolbarBuilder {
 
     private static JComboBox<String> createFontComboBox(TextEditorController controller) {
         var fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        return UIComponentFactory.createComboBox(fonts, e -> controller.setFontFamily((String) ((JComboBox<?>) e.getSource()).getSelectedItem()));
+        var fontComboBox = UIComponentFactory.createComboBox(fonts, e -> controller.setFontFamily((String) ((JComboBox<?>) e.getSource()).getSelectedItem()));
+        fontComboBox.setSelectedItem(Fonts.DEFAULT_TEXT_FONT.getFontName());
+        return fontComboBox;
     }
 
     private static JComboBox<Integer> createSizeComboBox(TextEditorController controller) {
-        return UIComponentFactory.createComboBox(FONT_SIZES, e -> controller.setFontSize((Integer) ((JComboBox<?>) e.getSource()).getSelectedItem()));
+        var sizeComboBox = UIComponentFactory.createComboBox(FONT_SIZES, e -> controller.setFontSize((Integer) ((JComboBox<?>) e.getSource()).getSelectedItem()));
+        sizeComboBox.setSelectedItem(Fonts.DEFAULT_TEXT_FONT.getSize());
+        return sizeComboBox;
     }
 
     private static void addFormattingButtons(JToolBar toolBar, TextEditorController controller) {

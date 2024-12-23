@@ -1,6 +1,7 @@
 package org.example.view.builders;
 
 import org.example.controller.TextEditorController;
+import org.example.view.Fonts;
 import org.example.view.factories.UIComponentFactory;
 
 import javax.swing.*;
@@ -8,8 +9,6 @@ import java.awt.*;
 import java.util.List;
 
 public class MenuBarBuilder {
-
-    private static final Font DEFAULT_FONT = new Font("Arial", Font.PLAIN, 16);
 
     public static JMenuBar build(TextEditorController controller, JFrame frame) {
         var menuBar = createMenuBar(frame);
@@ -37,7 +36,7 @@ public class MenuBarBuilder {
 
     private static JMenu buildMenu(String title, List<MenuItemConfig> items) {
         var menu = new JMenu(title);
-        menu.setFont(DEFAULT_FONT);
+        menu.setFont(Fonts.DEFAULT_MENU_FONT);
         menu.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         items.forEach(item -> menu.add(UIComponentFactory.createMenuItem(item.text(), item.action())));
         return menu;

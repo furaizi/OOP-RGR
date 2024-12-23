@@ -15,7 +15,6 @@ public class MainView {
     public MainView() {
         textPane = new JTextPane();
         controller = new TextEditorController(textPane);
-        setDefaultFontSize(24);
 
         frame = initializeFrame();
         frame.add(new JScrollPane(textPane), BorderLayout.CENTER);
@@ -23,6 +22,7 @@ public class MainView {
         frame.setJMenuBar(MenuBarBuilder.build(controller, frame));
 
         frame.setVisible(true);
+        textPane.setFont(Fonts.DEFAULT_TEXT_FONT);
     }
 
     private JFrame initializeFrame() {
@@ -31,10 +31,6 @@ public class MainView {
         frame.setSize(800, 500);
         frame.setLayout(new BorderLayout());
         return frame;
-    }
-
-    private void setDefaultFontSize(int size) {
-        textPane.setFont(new Font("Arial", Font.PLAIN, size));
     }
 
     public JTextPane getTextPane() {
