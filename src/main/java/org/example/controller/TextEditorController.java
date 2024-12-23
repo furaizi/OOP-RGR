@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.controller.handlers.TextAlignmentHandler;
 import org.example.model.TextProcessor;
+import org.example.view.Fonts;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -10,16 +11,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Objects;
 import java.util.Optional;
 
 public class TextEditorController {
     private final JTextPane textPane;
     private final TextProcessor textProcessor;
     private final TextAlignmentHandler alignmentHandler;
-
-    private static final String DEFAULT_FONT = "Arial";
-    private static final int DEFAULT_FONT_SIZE = 24;
 
     public TextEditorController(JTextPane textPane) {
         this.textPane = textPane;
@@ -57,20 +54,6 @@ public class TextEditorController {
         }
     }
 
-    // Команды
-    public void saveText() {
-        textProcessor.setContent(textPane.getText());
-        JOptionPane.showMessageDialog(null, "Text saved successfully.");
-    }
-
-    public void loadText() {
-        var text = Optional.ofNullable(JOptionPane.showInputDialog("Enter text to load:"));
-        text.ifPresent(content -> {
-            textPane.setText(content);
-            textProcessor.setContent(content);
-        });
-    }
-
     public void countWords() {
         textProcessor.setContent(textPane.getText());
         JOptionPane.showMessageDialog(null, "Word count: " + textProcessor.countWords());
@@ -92,12 +75,10 @@ public class TextEditorController {
         }
     }
 
-    // Выравнивание
     public void applyTextAlignment(int alignment) {
         alignmentHandler.applyAlignment(alignment);
     }
 
-    // Форматирование
     public void setFontFamily(String fontName) {
         Optional.ofNullable(fontName).ifPresent(
                 name -> new StyledEditorKit.FontFamilyAction("font-family", name).actionPerformed(null));
@@ -121,13 +102,8 @@ public class TextEditorController {
     }
 
     public void clearFormatting() {
-        resetTextPaneFormatting();
-    }
-
-    // Вспомогательные методы
-    private void resetTextPaneFormatting() {
         textPane.setCharacterAttributes(new SimpleAttributeSet(), true);
-        setFontFamily(DEFAULT_FONT);
-        setFontSize(DEFAULT_FONT_SIZE);
+        setFontFamily(Fonts.DEFAULT_TEXT_FONT.getFontName());
+        setFontSize(Fonts.DEFAULT_TEXT_FONT.getSize());
     }
 }

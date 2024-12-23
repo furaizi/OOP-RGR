@@ -33,11 +33,4 @@ public class MainView {
         return frame;
     }
 
-    public JTextPane getTextPane() {
-        return textPane;
-    }
-
-    public void showMessage(String message) {
-        JOptionPane.showMessageDialog(frame, message);
-    }
 }
