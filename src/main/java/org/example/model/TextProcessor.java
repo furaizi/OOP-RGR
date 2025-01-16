@@ -21,7 +21,9 @@ public class TextProcessor {
 
     public int countWords() {
         var text = documentContent.toString().trim();
-        return text.isEmpty() ? 0 : text.split("\\s+").length;
+        return (int) Arrays.stream(text.split("\\s+"))
+                            .filter(str -> str.chars().anyMatch(Character::isLetter))
+                            .count();
     }
 
     public void removeExtraSpaces() {
