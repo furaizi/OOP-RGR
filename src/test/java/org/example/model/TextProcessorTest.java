@@ -55,9 +55,8 @@ public class TextProcessorTest {
         assertEquals(2, actual, "\"Hello world!\" are two words");
     }
 
-    @DisplayName("test \"countWords\" method with one line and multiple spaces text")
     @Test()
-    public void testCountWordsWithOneLineText_2() {
+    public void testCountWordsWithMultipleSpacesText() {
         var model = new TextProcessor();
         model.setContent("   Hello      world  !");
 
@@ -66,7 +65,7 @@ public class TextProcessorTest {
     }
 
     @Test
-    public void testCountWordsWithMultipleLinesText_1() {
+    public void testCountWordsWithMultipleLinesText() {
         var text = """
                 To be, or not to be, that is the question:
                 Whether 'tis nobler in the mind to suffer
@@ -80,9 +79,8 @@ public class TextProcessorTest {
         assertEquals(34, actual, "This text contains 34 words");
     }
 
-    @DisplayName("test \"countWords\" method with multiple lines and spaces text")
     @Test
-    public void testCountWordsWithMultipleLinesText_2() {
+    public void testCountWordsWithMultipleLinesAndSpacesText() {
         var text = """
                 To    be   , or not   to be  , that is the question:    
                 Whether    'tis nobler    in   the mind to    suffer
