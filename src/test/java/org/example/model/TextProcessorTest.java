@@ -95,4 +95,95 @@ public class TextProcessorTest {
         var actual = model.countWords();
         assertEquals(34, actual, "This text contains 34 words");
     }
+
+    @Test
+    public void testRemoveExtraSpacesWithEmptyString() {
+        var model = new TextProcessor();
+        model.setContent("");
+        model.removeExtraSpaces();
+
+        assertNotNull(model.getContent());
+        assertEquals("", model.getContent());
+    }
+
+    @Test
+    public void testRemoveExtraSpacesWithOneSpaceString() {
+        var model = new TextProcessor();
+        model.setContent(" ");
+        model.removeExtraSpaces();
+
+        assertNotNull(model.getContent());
+        assertEquals(" ", model.getContent());
+    }
+
+    @Test
+    public void testRemoveExtraSpacesWithMultipleSpacesString() {
+        var model = new TextProcessor();
+        model.setContent("        ");
+        model.removeExtraSpaces();
+
+        assertNotNull(model.getContent());
+        assertEquals(" ", model.getContent());
+    }
+
+    @Test
+    public void testRemoveExtraSpacesWithOneLineText() {
+        var text = "Hello world!";
+        var model = new TextProcessor();
+        model.setContent(text);
+        model.removeExtraSpaces();
+
+        assertNotNull(model.getContent());
+        assertEquals(text, model.getContent());
+    }
+
+    @Test
+    public void testRemoveExtraSpacesWithOneLineMultipleSpacesText() {
+        var text = "Hello      world!";
+        var model = new TextProcessor();
+        model.setContent(text);
+        model.removeExtraSpaces();
+
+        assertNotNull(model.getContent());
+        assertEquals("Hello world!", model.getContent());
+    }
+
+    @Test
+    public void testRemoveExtraSpacesWithMultipleLinesText() {
+        var text = """
+                To be, or not to be, that is the question:
+                Whether 'tis nobler in the mind to suffer
+                The slings and arrows of outrageous fortune,
+                Or to take arms against a sea of troubles
+                """;
+        var model = new TextProcessor();
+        model.setContent(text);
+        model.removeExtraSpaces();
+
+        assertNotNull(model.getContent());
+        assertEquals(text, model.getContent());
+    }
+
+    @Test
+    public void testRemoveExtraSpacesWithMultipleLinesAndSpacesText() {
+        var defaultText = """
+                To be, or not to be, that is the question:
+                Whether 'tis nobler in the mind to suffer
+                The slings and arrows of outrageous fortune,
+                Or to take arms against a sea of troubles
+                """;
+        var spacedText = """
+                To      be, or not    to be, that is     the question:
+                Whether     'tis nobler in the mind      to suffer
+                The slings       and arrows           of outrageous fortune,
+                Or to    take arms     against a       sea of troubles
+                """;
+
+        var model = new TextProcessor();
+        model.setContent(spacedText);
+        model.removeExtraSpaces();
+
+        assertNotNull(model.getContent());
+        assertEquals(defaultText, model.getContent());
+    }
 }

@@ -28,8 +28,7 @@ public class TextProcessor {
 
     public void removeExtraSpaces() {
         var cleanedText = documentContent.toString()
-                .trim()
-                .replaceAll("\\s+", " ");
+                .replaceAll(" +", " ");
         documentContent.setLength(0);
         documentContent.append(cleanedText);
     }
